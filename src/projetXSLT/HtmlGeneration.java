@@ -10,15 +10,6 @@ import java.io.IOException;
  */
 public class HtmlGeneration {
 	
-	 public static void main( String[] args )
-	    {
-	        try {
-	            convertToHtml("bibliotheque.xml", "to_html.xsl", "test.html");
-	        } catch ( IOException | TransformerException | SAXException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	
 	/**
 	 * Méthode permettant de convertir un fichier XML vers HTML via une transformation XSLT
 	 * @param sourceXml - string - chemin du fichier source au format XML

@@ -19,16 +19,18 @@ import org.apache.fop.apps.MimeConstants;
 
 public class PdfGeneration {
 
-    public static void convertToPDF(StreamSource xmlSource) throws IOException, FOPException, TransformerException {
+    public static void convertToPDF(String input, String xslt, String output) throws IOException, FOPException, TransformerException {
         // the XSL FO file
-        File xsltFile = new File("xmltopdf.xsl");
+        File xsltFile = new File(xslt);
+        // the XML file which provides the input
+        StreamSource xmlSource = new StreamSource(new File(input));
         // create an instance of fop factory
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
         // a user agent is needed for transformation
         FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
         // Setup output
         OutputStream out;
-        out = new java.io.FileOutputStream("bibliotheque.pdf");
+        out = new java.io.FileOutputStream(output);
 
         try {
             // Construct fop with desired output format
