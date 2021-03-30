@@ -59,7 +59,7 @@ public class TransformateurBibli2 {
     public static void main( String[] args )
     {
     	TransformateurBibli2 transfo = new TransformateurBibli2();
-        transfo.convertXML("bibliotheque3.xml", "test4.html", "html");
+        transfo.convertXML("bibliotheque.xml", "test2.html", "html");
     }
 
 }
