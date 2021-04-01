@@ -10,51 +10,68 @@ import org.xml.sax.SAXException;
 
 public class TransformateurBibli {
 	
-	private String input;
+	private String htmlStylesheet;
+	private String pdfStylesheet;
 	
-	public TransformateurBibli(String input) {
-		this.setInput(input);
+	public TransformateurBibli() {
+		this.setHtmlStylesheet("to_html.xsl");
+		this.setPdfStylesheet("xmltopdf.xsl");
 	}
 	
-	public void convertXML(String format) {
+	public void convertXML(String input, String out, String format) {
+		String output = out + "." + format;
 	    if (format.equals("pdf")) {
 	        try {
-	        	PdfGeneration.convertToPDF(this.input, "xmltopdf.xsl", "bibliotheque.pdf");
-	        } catch (FOPException | IOException | TransformerException e) {
+	        	PdfGeneration.convertToPDF(input, pdfStylesheet, output);
+	        } catch (IOException e) {
 	            e.printStackTrace();
-	        }
+	        } catch (FOPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		    
 	    else if (format.equals("html")) {
 	        try {
-	        	HtmlGeneration.convertToHtml(this.input, "to_html.xsl", "test.html");
+	        	HtmlGeneration.convertToHtml(input, htmlStylesheet, output);
 	        } catch ( IOException | TransformerException | SAXException e) {
 	            e.printStackTrace();
 	        }
 	    }
 	    
-	    
 	    else {
-			System.out.println("Le format demandé n'est pas pris en charge.");
+			System.out.println("ERREUR - Le format demandÃ© n'est pas pris en charge.");
 		}
 	}
+
+	public String getHtmlStylesheet() {
+		return htmlStylesheet;
+	}
+
+	public void setHtmlStylesheet(String htmlStylsheet) {
+		this.htmlStylesheet = htmlStylsheet;
+	}
+
+	public String getPdfStylesheet() {
+		return pdfStylesheet;
+	}
+
+	public void setPdfStylesheet(String pdfStylesheet) {
+		this.pdfStylesheet = pdfStylesheet;
+	}	 
 	
-	public String getInput() {
-		return input;
-	}
-
-	public void setInput(String input) {
-		this.input = input;
-	}
-
 
     public static void main( String[] args )
     {
-        TransformateurBibli transfo = new TransformateurBibli("bibliotheque.xml");
-		Scanner myObj = new Scanner(System.in);
-	    System.out.println("Entrez le format de fichier de sortie souhaité : pdf ou html.");	
+    	TransformateurBibli transfo = new TransformateurBibli();
+    	Scanner myObj = new Scanner(System.in);
+	    System.out.println("Entrez le format de sortie souhaité.");	
 	    String format = myObj.nextLine();
-	    transfo.convertXML(format);
-    }	    
+        transfo.convertXML("bibliotheque.xml", "test2", format);
+    }
 
 }
+
