@@ -35,7 +35,7 @@ public class PdfGeneration {
 	 * @param output - string - chemin du fichier de sortie PDF
 	 */
 
-    public static void convertToPDF(String input, String xslt, String output) throws IOException, FOPException, TransformerException {
+    public static void convertToPDF(String input, String xslt, String output) throws IOException, FOPException, TransformerException, BadlyFormedXMLException {
         File xsltFile = new File(xslt);
         
         File fichierXML = new File(input);
@@ -53,8 +53,7 @@ public class PdfGeneration {
 			Document doc = builder.parse(is);
 			}
 			catch (Exception e) {
-			System.out.println(input + " est mal formé.");
-			System.exit(1);
+				throw new BadlyFormedXMLException(input + " est mal formé.");
 			}
         
         StreamSource xmlSource = new StreamSource(fichierXML);

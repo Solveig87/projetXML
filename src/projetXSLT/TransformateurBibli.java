@@ -40,6 +40,8 @@ public class TransformateurBibli {
 				e.printStackTrace();
 			} catch (TransformerException e) {
 				e.printStackTrace();
+			} catch (BadlyFormedXMLException e) {
+				System.out.println(e.getMessage());
 			}
 		}
 		    
@@ -47,13 +49,15 @@ public class TransformateurBibli {
 	        try {
 	        	HtmlGeneration.convertToHtml(input, htmlStylesheet, output);
 	        } catch (IOException e) {
-	            System.out.println("Erreur : le fichier n'a pas été trouvé.");
+	        	System.out.println(e.getMessage());
 	        } catch (FOPException e) {
 				e.printStackTrace();
 			} catch (TransformerException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {
 				e.printStackTrace();
+			} catch (BadlyFormedXMLException e) {
+				System.out.println(e.getMessage());
 			}
 	    }
 	    
