@@ -8,6 +8,10 @@ import javax.xml.transform.TransformerException;
 import org.apache.fop.apps.FOPException;
 import org.xml.sax.SAXException;
 
+/**
+ * Classe permettant d'opérer des transformations XML-> PDF ou HTML via XSLT
+ */
+
 public class TransformateurBibli {
 	
 	private String htmlStylesheet;
@@ -17,6 +21,13 @@ public class TransformateurBibli {
 		this.setHtmlStylesheet("to_html.xsl");
 		this.setPdfStylesheet("xmltopdf.xsl");
 	}
+
+	/**
+	 * Méthode permettant de convertir un fichier XML vers HTML ou PDF via une transformation XSLT
+	 * @param input - string - chemin du fichier source au format XML
+	 * @param out - string - chemin du fichier de sortie sans son extension
+	 * @param format - string - format du fichier de sortie : pdf ou html
+	 */	
 	
 	public void convertXML(String input, String out, String format) {
 		String output = out + "." + format;
@@ -24,12 +35,10 @@ public class TransformateurBibli {
 	        try {
 	        	PdfGeneration.convertToPDF(input, pdfStylesheet, output);
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	            System.out.println(e.getMessage());
 	        } catch (FOPException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (TransformerException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -37,9 +46,15 @@ public class TransformateurBibli {
 	    else if (format.equals("html")) {
 	        try {
 	        	HtmlGeneration.convertToHtml(input, htmlStylesheet, output);
-	        } catch ( IOException | TransformerException | SAXException e) {
-	            e.printStackTrace();
-	        }
+	        } catch (IOException e) {
+	            System.out.println("Erreur : le fichier n'a pas été trouvé.");
+	        } catch (FOPException e) {
+				e.printStackTrace();
+			} catch (TransformerException e) {
+				e.printStackTrace();
+			} catch (SAXException e) {
+				e.printStackTrace();
+			}
 	    }
 	    
 	    else {
@@ -70,7 +85,8 @@ public class TransformateurBibli {
     	Scanner myObj = new Scanner(System.in);
 	    System.out.println("Entrez le format de sortie souhaité.");	
 	    String format = myObj.nextLine();
-        transfo.convertXML("bibliotheque.xml", "test2", format);
+        transfo.convertXML("xmlmalforme.xml", "test2", format);
+        myObj.close();
     }
 
 }

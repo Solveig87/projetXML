@@ -3,6 +3,9 @@ package projetXSLT;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import org.xml.sax.*;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -19,7 +22,11 @@ public class HtmlGeneration {
 	public static void convertToHtml(String sourceXml, String feuilleXsl, String sortieHtml)
 			throws TransformerException, TransformerConfigurationException, 
 		         SAXException, IOException	   
-			{
+				{
+			File fichierXML = new File(sourceXml);
+	        if(!fichierXML.exists() || fichierXML.isDirectory()) { 
+	            throw new FileNotFoundException();
+	        }
 			
 		    TransformerFactory tFactory = TransformerFactory.newInstance();
 		    Transformer transformer = tFactory.newTransformer(new StreamSource(feuilleXsl));
