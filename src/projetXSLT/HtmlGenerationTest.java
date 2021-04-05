@@ -28,7 +28,7 @@ public class HtmlGenerationTest {
 	public TemporaryFolder repertoireTest = new TemporaryFolder();
 	
 	@Test
-	public void convertToHtml_succes() throws TransformerConfigurationException, TransformerException, SAXException, IOException, BadlyFormedXMLException, ParserConfigurationException  {
+	public void testConvertToHtml_succes() throws TransformerConfigurationException, TransformerException, SAXException, IOException, BadlyFormedXMLException, ParserConfigurationException  {
 		//GIVEN
 		String source = "bibliotheque.xml";
 		String feuille = ProjetConstantes.FEUILLEHTML;
@@ -36,10 +36,10 @@ public class HtmlGenerationTest {
 				
 		//WHEN
 		HtmlGeneration.convertToHtml(source, feuille, sortie);
-		Document sortieParsee = VerificationFichiers.parserXML(sortie);
 		
 		//THEN
 		assertTrue( VerificationFichiers.fichierExiste(sortie) );
+		Document sortieParsee = VerificationFichiers.parserXML(sortie);
 		//vérification Contenu : tableau html généré contient bien 7 lignes
 		assertEquals( 7, sortieParsee.getElementsByTagName("tr").getLength() );
 		//vérification Contenu : vérifier que la première cellule de la première ligne (deuxième si on compte le titre) du tableau contient bien "Harry Potter"
@@ -47,7 +47,7 @@ public class HtmlGenerationTest {
 	}
 	
 	@Test 
-	public void convertToHtml_xmlInexistant() {
+	public void testConvertToHtml_xmlInexistant() {
 		//GIVEN
 		String source = "fichierNonExistant.xml";
 		String feuille = ProjetConstantes.FEUILLEHTML;
@@ -69,7 +69,7 @@ public class HtmlGenerationTest {
 	}
 	
 	@Test 
-	public void convertToHtml_xslInexistant() {
+	public void testConvertToHtml_xslInexistant() {
 		//GIVEN
 		String source = "bibliotheque.xml";
 		String feuille = "feuilleNonExistante.xsl";
@@ -91,7 +91,7 @@ public class HtmlGenerationTest {
 	}
 	
 	@Test 
-	public void convertToHtml_xmlMalForme() throws IOException{
+	public void testConvertToHtml_xmlMalForme() throws IOException{
 		
 		//GIVEN
 		File xmlMalForme= repertoireTest.newFile("xmlMalforme.xml");
@@ -141,7 +141,7 @@ public class HtmlGenerationTest {
 	}
 	
 	@Test 
-	public void convertToHtml_xslNonFonctionnelle() throws IOException{
+	public void testConvertToHtml_xslNonFonctionnelle() throws IOException{
 		
 		//GIVEN
 		File xslNonFonc= repertoireTest.newFile("xslNonFonc.xsl");
