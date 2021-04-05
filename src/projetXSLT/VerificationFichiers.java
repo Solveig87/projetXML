@@ -33,14 +33,15 @@ public class VerificationFichiers {
 	 * Méthode permettant de parser un fichier devant suivre une structure html pour vérifier qu'il est bien formé/non vide
 	 * Lève une SAXException si le fichier est mal formé
 	 * @param cheminFichier - string - chemin du fichier à parser
+	 * @return doc - Document - l'objet document du fichier parsé
 	 */	
-	public static void parserXML( String cheminFichier) throws ParserConfigurationException, SAXException, IOException {
+	public static Document parserXML( String cheminFichier) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dBF = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dBF.newDocumentBuilder();
 		InputSource is = new InputSource(cheminFichier);
 		builder.setErrorHandler(null);
 		Document doc = builder.parse(is);
-	
+		return doc;
 	}
 
 }

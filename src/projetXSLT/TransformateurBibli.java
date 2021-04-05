@@ -57,7 +57,6 @@ public class TransformateurBibli {
 	public void setPdfStylesheet(String pdfStylesheet) {
 		this.pdfStylesheet = pdfStylesheet;
 	}	 
-	
 
     public static void main( String[] args ) throws SAXException, TransformerException, ParserConfigurationException
     {
@@ -68,7 +67,7 @@ public class TransformateurBibli {
 	    System.out.println("Entrez le nom du fichier de sortie souhaité.");	
 	    String output = myObj.nextLine();
 	    try {
-	    	transfo.convertXML("bibliotheque.xml", output, format);
+	    	transfo.convertXML("xmlmalforme.xml", output, format);
 	    }
 	    catch ( IOException | BadlyFormedXMLException | FormatException e) {
 	    	System.err.println(e.getMessage());

@@ -65,9 +65,6 @@ public class PdfGeneration {
 		//Transformation 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
         FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        
-        OutputStream out = new java.io.FileOutputStream(output);
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
 
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer = factory.newTransformer(new StreamSource(xsltFile));
@@ -76,6 +73,9 @@ public class PdfGeneration {
 	    if (transformer == null) {
 	    	throw new BadlyFormedXSLException("ERREUR FATALE - La feuille de style " + xslt + " est mal formée (non fonctionnelle)!");
 	    }
+	    
+	    OutputStream out = new java.io.FileOutputStream(output);
+        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
         Result res = new SAXResult(fop.getDefaultHandler());
 
         transformer.transform(new StreamSource(input), res);

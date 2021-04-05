@@ -2,11 +2,12 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 
+    <xsl:output method="xml"/>
 
     <xsl:template match="/bibliotheque">
         <html lang="fr">
             <head>
-                <title>Bibliothèque</title>
+                <title> <xsl:text disable-output-escaping="yes">Bibliothèque</xsl:text></title>
                 <meta charset="UTF-8">
                     <link rel="stylesheet" type="text/css" href="css/util.css"/>
                     <link rel="stylesheet" type="text/css" href="css/main.css"/>
@@ -24,7 +25,7 @@
                                             <th class="column1">Titre</th>
                                             <th class="column2">Auteur</th>
                                             <th class="column3">Date de publication</th>
-                                            <th class="column4">Résumé</th>
+                                            <th class="column4" disable-output-escaping="yes"><xsl:text disable-output-escaping="yes">Résumé</xsl:text></th>
                                             <th class="column5">Nombre tomes</th>
                                             <th class="column6">Langue</th>
                                         </tr>
@@ -43,16 +44,16 @@
 
     <xsl:template match="livre">
         <tr>
-            <td class="column1"><xsl:value-of select="titre"/></td>
-            <td class="column2"><xsl:value-of select="auteur"/></td>
-            <td class="column3"><xsl:value-of select="date_publication"/></td>
-            <td class="column4" style="text-align:justify;"><xsl:value-of select="resume"/></td>
+            <td class="column1"><xsl:value-of select="titre" disable-output-escaping="yes"/></td>
+            <td class="column2"><xsl:value-of select="auteur" disable-output-escaping="yes"/></td>
+            <td class="column3"><xsl:value-of select="date_publication" disable-output-escaping="yes"/></td>
+            <td class="column4" style="text-align:justify;"><xsl:value-of select="resume" disable-output-escaping="yes"/></td>
             <td class="column5">
-                <xsl:if test="nb_tomes"><xsl:value-of select="nb_tomes"/></xsl:if>
+                <xsl:if test="nb_tomes"><xsl:value-of select="nb_tomes" disable-output-escaping="yes"/></xsl:if>
                 <xsl:if test="not(nb_tomes)"> 1 </xsl:if>
             </td>
             <td class="column6">
-                <xsl:if test="@lang"><xsl:value-of select="@lang"/></xsl:if>
+                <xsl:if test="@lang"><xsl:value-of select="@lang" disable-output-escaping="yes"/></xsl:if>
                 <xsl:if test="not(@lang)"> fr </xsl:if>
             </td>
         </tr>
