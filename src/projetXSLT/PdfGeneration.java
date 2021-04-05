@@ -5,8 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -14,66 +13,72 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
- * Classe permettant d'op�rer des transformations XML-> PDF via XSLT
+ * Classe permettant d'opérer des transformations XML-> PDF via XSLT
  */
 
 public class PdfGeneration {
 	
 	/**
-	 * M�thode permettant de convertir un fichier XML vers PDF via une transformation XSLT
+	 * Méthode permettant de convertir un fichier XML vers PDF via une transformation XSLT
 	 * @param input - string - chemin du fichier source au format XML
 	 * @param xslt - string - chemin de la feuille de style au format XSL
 	 * @param output - string - chemin du fichier de sortie PDF
 	 */
 
-    public static void convertToPDF(String input, String xslt, String output) throws IOException, FOPException, TransformerException, BadlyFormedXMLException {
+    public static void convertToPDF(String input, String xslt, String output) throws IOException, BadlyFormedXMLException, ParserConfigurationException, TransformerException, SAXException {
         File xsltFile = new File(xslt);
         
-        File fichierXML = new File(input);
-        if(!fichierXML.exists() || fichierXML.isDirectory()) { 
-            throw new FileNotFoundException("Fichier non trouv� : " + input);
-        }
+        // Vérification que le fichier d'entrée existe
+        if( !VerificationFichiers.fichierExiste(input) ) { 
+        	throw new FileNotFoundException("ERREUR - Fichier d'entrée non trouvé : " + input);
+	    }
+     	        
+     	// Vérification que la feuille XSL existe
+     	 if( !VerificationFichiers.fichierExiste(xslt) ) { 
+     		throw new FileNotFoundException("ERREUR - Feuille XSL non trouvée : " + xslt);
+     	} 
         
+     	//Vérification que le fichier d'entrée est bien formé et non vide
 		try {
-			// Create a new factory to create parsers
-			DocumentBuilderFactory dBF = DocumentBuilderFactory.newInstance();
-			// Use the factory to create a parser (builder) and use it to parse the document.
-			DocumentBuilder builder = dBF.newDocumentBuilder();
-
-			InputSource is = new InputSource(input);
-			Document doc = builder.parse(is);
+			VerificationFichiers.parserXML(input);
 			}
-			catch (Exception e) {
-				throw new BadlyFormedXMLException(input + " est mal form�.");
+		catch (SAXParseException e) {
+			throw new BadlyFormedXMLException("ERREUR FATALE - Le fichier d'entrée " + input + " est mal formé : \n" + e.getMessage());
+		}
+		
+		//Vérification que la feuille de style est bien formée et non vide
+		try {
+			VerificationFichiers.parserXML(xslt);
 			}
+		catch (SAXParseException e) {
+			throw new BadlyFormedXMLException("ERREUR FATALE - La feuille de style " + xslt + " est mal formée : \n" + e.getMessage());
+		}
         
-        StreamSource xmlSource = new StreamSource(fichierXML);
-        
+		//Transformation 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
         FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        OutputStream out;
-        out = new java.io.FileOutputStream(output);
+        
+        OutputStream out = new java.io.FileOutputStream(output);
+        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
 
-        try {
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer(new StreamSource(xsltFile));
+        
+        //Cas d'une feuille de style XSLT non fonctionnelle : le transformer sera null
+	    if (transformer == null) {
+	    	throw new BadlyFormedXSLException("ERREUR FATALE - La feuille de style " + xslt + " est mal formée (non fonctionnelle)!");
+	    }
+        Result res = new SAXResult(fop.getDefaultHandler());
 
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(new StreamSource(xsltFile));
-
-            Result res = new SAXResult(fop.getDefaultHandler());
-
-            transformer.transform(xmlSource, res);
-        } finally {
-            out.close();
-        }
+        transformer.transform(new StreamSource(input), res);
+        out.close();
     }
 }

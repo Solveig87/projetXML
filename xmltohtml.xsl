@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
-    
-    
-    <xsl:template match="/">
+
+
+    <xsl:template match="/bibliotheque">
         <html lang="fr">
             <head>
                 <title>Bibliothèque</title>
@@ -13,7 +13,7 @@
                 </meta>
             </head>
             <body>
-                
+
                 <div class="limiter">
                     <div class="container-table100">
                         <div class="wrap-table100">
@@ -40,7 +40,7 @@
             </body>
         </html>
     </xsl:template>
-    
+
     <xsl:template match="livre">
         <tr>
             <td class="column1"><xsl:value-of select="titre"/></td>
@@ -57,6 +57,6 @@
             </td>
         </tr>
     </xsl:template>
-    
-    
+
+
 </xsl:stylesheet>

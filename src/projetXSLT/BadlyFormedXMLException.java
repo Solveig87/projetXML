@@ -1,7 +1,8 @@
 package projetXSLT;
 
-class BadlyFormedXMLException extends Exception{
-	BadlyFormedXMLException(String s){  
+public class BadlyFormedXMLException extends Exception {
+	
+	public BadlyFormedXMLException(String s){  
         super(s);  
     }  
   

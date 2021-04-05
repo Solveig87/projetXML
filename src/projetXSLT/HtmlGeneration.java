@@ -1,14 +1,10 @@
 package projetXSLT;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
-import org.w3c.dom.Document;
 import org.xml.sax.*;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -24,30 +20,45 @@ public class HtmlGeneration {
 	 * @param sortieHtml - string - chemin du fichier de sortie HTML
 	 */
 	public static void convertToHtml(String sourceXml, String feuilleXsl, String sortieHtml)
-			throws TransformerException, TransformerConfigurationException, 
-		         SAXException, IOException, BadlyFormedXMLException	   
+			throws TransformerConfigurationException, TransformerException,
+		         SAXException, IOException, BadlyFormedXMLException, ParserConfigurationException	   
 				{
-			File fichierXML = new File(sourceXml);
-	        if(!fichierXML.exists() || fichierXML.isDirectory()) { 
-	            throw new FileNotFoundException();
-	        }
-	        
-			try {
-				// Create a new factory to create parsers
-				DocumentBuilderFactory dBF = DocumentBuilderFactory.newInstance();
-				// Use the factory to create a parser (builder) and use it to parse the document.
-				DocumentBuilder builder = dBF.newDocumentBuilder();
-
-				InputSource is = new InputSource(sourceXml);
-				Document doc = builder.parse(is);
-				}
-				catch (Exception e) {
-					throw new BadlyFormedXMLException(sourceXml + " est mal formé.");
-				}
+		
+			// Vérification que le fichier d'entrée existe
+        	if( !VerificationFichiers.fichierExiste(sourceXml) ) { 
+        		throw new FileNotFoundException("ERREUR - Fichier d'entrée non trouvé : " + sourceXml);
+        	}
+     	        
+        	// Vérification que la feuille XSL existe
+        	if( !VerificationFichiers.fichierExiste(feuilleXsl) ) { 
+        		throw new FileNotFoundException("ERREUR - Feuille XSL non trouvée : " + feuilleXsl);
+        	} 
+        
+        	//Vérification que le fichier d'entrée est bien formé et non vide
+        	try {
+        		VerificationFichiers.parserXML(sourceXml);
+			}
+        	catch (SAXParseException e) {
+        		throw new BadlyFormedXMLException("ERREUR FATALE - Le fichier d'entrée " + sourceXml + " est mal formé : \n" + e.getMessage());
+        	}
+		
+        	//Vérification que la feuille de style est bien formée et non vide
+        	try {
+        		VerificationFichiers.parserXML(feuilleXsl);
+			}
+        	catch (SAXParseException e) {
+        		throw new BadlyFormedXMLException("ERREUR FATALE - La feuille de style " + feuilleXsl + " est mal formée : \n" + e.getMessage());
+        	}
 			
-		    TransformerFactory tFactory = TransformerFactory.newInstance();
+        	//Transformation 
+			TransformerFactory tFactory = TransformerFactory.newInstance();
 		    Transformer transformer = tFactory.newTransformer(new StreamSource(feuilleXsl));
-
+		    
+		    //Cas d'une feuille de style XSLT non fonctionnelle : le transformer sera null
+		    if (transformer == null) {
+		    	throw new BadlyFormedXSLException("ERREUR FATALE - La feuille de style " + sourceXml + " est mal formée (non fonctionnelle)!");
+		    }
+		    
 		    transformer.transform(new StreamSource(sourceXml), new StreamResult(sortieHtml));
 		  }
 
