@@ -1,2 +1,5 @@
 eclipse.preferences.version=1
 encoding//src/projetXSLT/HtmlGeneration.java=UTF-8
+encoding//src/projetXSLT/PdfGeneration.java=UTF-8
+encoding//src/projetXSLT/TransformateurBibli.java=UTF-8
+encoding//src/projetXSLT/VerificationFichiers.java=UTF-8
