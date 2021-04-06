@@ -32,7 +32,7 @@ public class VerificationFichiersTest {
 		
 		//THEN
 		assertTrue(VerificationFichiers.fichierExiste(repertoireTest.getRoot()+"/fichierTest.txt"));
-		assertFalse(VerificationFichiers.fichierExiste(repertoireTest.getRoot()+"+fauxfichier.txt"));
+		assertFalse(VerificationFichiers.fichierExiste(repertoireTest.getRoot()+"/fauxfichier.txt"));
 		
 	}
 	
