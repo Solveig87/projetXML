@@ -32,43 +32,83 @@ public class TransformateurBibliTest {
 	public TemporaryFolder repertoireTest = new TemporaryFolder();
 	
 	@Test
-	public void testconvertXML_succes()throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException {
+	public void testConvertXML_html()throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException, BadlyFormedXSLException {
 		//GIVEN
-		String input = "bibliotheque.xml";
-		String format1 = "html";
-		String output1 = repertoireTest.getRoot()+"/testHtml";
-		String format2 = "pdf";
-		String output2 = repertoireTest.getRoot()+"/testPdf";
+		String input =ProjetConstantes.XMLTEST;
+		String format = "html";
+		String output = repertoireTest.getRoot()+"/testPdf";
 		
 		//WHEN
-		transformateurBibli.convertXML(input, output1, format1);
-		transformateurBibli.convertXML(input, output2, format2);
+		transformateurBibli.convertXML(input, format, output);
 		
 		//THEN
-		assertTrue(new File(output1+"."+format1).exists());
-		assertTrue(new File(output2+"."+format2).exists());
+		assertTrue(VerificationFichiers.fichierExiste(output+"."+format));
+		
+	}
+
+	@Test
+	public void testConvertXML_pdf()throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException, BadlyFormedXSLException {
+		//GIVEN
+		String input =ProjetConstantes.XMLTEST;
+		String format = "pdf";
+		String output = repertoireTest.getRoot()+"/testPdf";
+		
+		//WHEN
+		transformateurBibli.convertXML(input, format, output);
+		
+		//THEN
+		assertTrue(VerificationFichiers.fichierExiste(output+"."+format));
 		
 	}
 	
 	@Test
-	public void testconvertXML_mauvaisFormat()throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException {
+	public void testConvertXML_surcharge()throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException, BadlyFormedXSLException {
 		//GIVEN
-		String input = "bibliotheque.xml";
+		String input =ProjetConstantes.XMLTEST;
+		String format = "html";
+		
+		//WHEN
+		transformateurBibli.convertXML(input, format);
+		
+		//THEN
+		String output_suppose = input.substring(0, input.lastIndexOf('.'))+"."+format;
+		assertTrue(VerificationFichiers.fichierExiste(output_suppose));
+		(new File(output_suppose)).delete();
+		
+	}
+	
+	@Test
+	public void testConvertXML_mauvaisFormat1() {
+		/* Vérifie la non-création d'un fichier de sortie */
+		
+		//GIVEN
+		String input = ProjetConstantes.XMLTEST;
 		String format = "formatNonExistant";
 		String output = repertoireTest.getRoot()+"/test";
-		Throwable exception = null;		
 		
 		//WHEN
 		try {
-			transformateurBibli.convertXML(input, output, format);
+			transformateurBibli.convertXML(input, format, output);
 		}
 		catch (Exception e){
-			exception = e;
 		}
 		
 		//THEN
-		assertEquals(FormatException.class, exception.getClass());
-		assertFalse( VerificationFichiers.fichierExiste(output) );
+		assertFalse( VerificationFichiers.fichierExiste(output+"."+format) );
+		
+	}
+	
+	@Test (expected = FormatException.class)
+	public void testConvertXML_mauvaisFormat2()throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException, BadlyFormedXSLException {
+		/* Vérifie que l'Exception FormatException est bien levée */
+		
+		//GIVEN
+		String input = ProjetConstantes.XMLTEST;
+		String format = "formatNonExistant";
+		String output = repertoireTest.getRoot()+"/test";
+		
+		//WHEN
+		transformateurBibli.convertXML(input, format, output);
 		
 	}
 

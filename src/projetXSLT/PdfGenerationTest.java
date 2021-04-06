@@ -29,9 +29,9 @@ public class PdfGenerationTest {
 	public TemporaryFolder repertoireTest = new TemporaryFolder();
 	
 	@Test
-	public void convertToHtml_succes() throws TransformerConfigurationException, TransformerException, SAXException, IOException, BadlyFormedXMLException, ParserConfigurationException  {
+	public void testConvertToPdf_succes() throws TransformerConfigurationException, TransformerException, SAXException, IOException, BadlyFormedXMLException, ParserConfigurationException, BadlyFormedXSLException  {
 		//GIVEN
-		String source = "bibliotheque.xml";
+		String source = ProjetConstantes.XMLTEST;
 		String feuille = ProjetConstantes.FEUILLEPDF;
 		String sortie = repertoireTest.getRoot()+"/test.pdf";
 				
@@ -48,121 +48,188 @@ public class PdfGenerationTest {
 	}
 	
 	@Test 
-	public void convertToHtml_xmlInexistant() {
+	public void testConvertToPdf_xmlInexistant1() {
+		/* Vérifie la non-création d'un fichier de sortie */
+		
 		//GIVEN
 		String source = "fichierNonExistant.xml";
 		String feuille =ProjetConstantes.FEUILLEPDF;
 		String sortie = repertoireTest.getRoot()+"/test.pdf";
-		Throwable exception = null;	
 		
 		//WHEN
 		try {
 			PdfGeneration.convertToPDF(source, feuille, sortie);
 		}
 		catch (Exception e){
-			exception = e;
 		}
 		
 		//THEN
-		assertEquals(FileNotFoundException.class, exception.getClass());
 		assertFalse( VerificationFichiers.fichierExiste(sortie) );
 		
 	}
 	
-	@Test 
-	public void convertToHtml_xslInexistant() {
+	@Test (expected = FileNotFoundException.class)
+	public void testConvertToPdf_xmlInexistant2() throws IOException, BadlyFormedXMLException, ParserConfigurationException, TransformerException, SAXException, BadlyFormedXSLException {
+		/* Vérifie que l'Exception FileNotFoundException est bien levée */
+		
 		//GIVEN
-		String source = "bibliotheque.xml";
+		String source = "fichierNonExistant.xml";
+		String feuille =ProjetConstantes.FEUILLEPDF;
+		String sortie = repertoireTest.getRoot()+"/test.pdf";
+		
+		//WHEN
+		PdfGeneration.convertToPDF(source, feuille, sortie);
+		
+	}
+	
+	@Test 
+	public void testConvertToPdf_xslInexistant1() {
+		/* Vérifie la non-création d'un fichier de sortie */
+		
+		//GIVEN
+		String source = ProjetConstantes.XMLTEST;
 		String feuille = "feuilleNonExistante.xsl";
 		String sortie = repertoireTest.getRoot()+"/test.pdf";
-		Throwable exception = null;
 		
 		//WHEN
 		try {
 			PdfGeneration.convertToPDF(source, feuille, sortie);
 		}
 		catch (Exception e){
-			exception = e;
 		}
 		
 		//THEN
-		assertEquals(FileNotFoundException.class, exception.getClass());
 		assertFalse( VerificationFichiers.fichierExiste(sortie) );
 		
 	}
 	
+	@Test (expected = FileNotFoundException.class)
+	public void testConvertToPdf_xslInexistant2() throws IOException, BadlyFormedXMLException, ParserConfigurationException, TransformerException, SAXException, BadlyFormedXSLException {
+		/* Vérifie que l'Exception FileNotFoundException est bien levée */
+		
+		//GIVEN
+		String source = ProjetConstantes.XMLTEST;
+		String feuille = "feuilleNonExistante.xsl";
+		String sortie = repertoireTest.getRoot()+"/test.pdf";
+		
+		//WHEN
+		PdfGeneration.convertToPDF(source, feuille, sortie);
+		
+	}
+	
 	@Test 
-	public void convertToHtml_xmlMalForme() throws IOException{
+	public void testConvertToPdf_xmlMalForme1() throws IOException{
+		/* Vérifie la non-création d'un fichier de sortie */
 		
 		//GIVEN
 		File xmlMalForme= repertoireTest.newFile("xmlMalforme.xml");
-		FileUtils.writeStringToFile(xmlMalForme, "<?xml version=\"1.0\"?><bibli></bib>");
+		FileUtils.writeStringToFile(xmlMalForme,  ProjetConstantes.XMLBADFORM);
 		String source = repertoireTest.getRoot()+"/xmlMalForme.xml";
 		String feuille = ProjetConstantes.FEUILLEPDF;
 		String sortie = repertoireTest.getRoot()+"/test.pdf";
-		Throwable exception = null;		
 		
 		//WHEN
 		try {
 			PdfGeneration.convertToPDF(source, feuille, sortie);
 		}
 		catch (Exception e){
-			exception = e;
 		}
 		
 		//THEN
-		assertEquals(BadlyFormedXMLException.class, exception.getClass());
 		assertFalse( VerificationFichiers.fichierExiste(sortie) );
 		
 	}
 	
+	@Test (expected = BadlyFormedXMLException.class)
+	public void testConvertToPdf_xmlMalForme2() throws IOException, BadlyFormedXMLException, ParserConfigurationException, TransformerException, SAXException, BadlyFormedXSLException{
+		/* Vérifie que l'Exception BadlyFormedXMLException est bien levée */
+		
+		//GIVEN
+		File xmlMalForme= repertoireTest.newFile("xmlMalforme.xml");
+		FileUtils.writeStringToFile(xmlMalForme,  ProjetConstantes.XMLBADFORM);
+		String source = repertoireTest.getRoot()+"/xmlMalForme.xml";
+		String feuille = ProjetConstantes.FEUILLEPDF;
+		String sortie = repertoireTest.getRoot()+"/test.pdf";		
+		
+		//WHEN
+		PdfGeneration.convertToPDF(source, feuille, sortie);
+		
+	}
+	
 	@Test 
-	public void convertToHtml_xslMalForme() throws IOException{
+	public void testConvertToPdf_xslMalForme1() throws IOException{
+		/* Vérifie la non-création d'un fichier de sortie */
 		
 		//GIVEN
 		File xslMalForme= repertoireTest.newFile("xslMalforme.xsl");
-		FileUtils.writeStringToFile(xslMalForme, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xsl:stylesheet>");
-		String source = "bibliotheque.xml";
+		FileUtils.writeStringToFile(xslMalForme, ProjetConstantes.XSLBADFORM);
+		String source = ProjetConstantes.XMLTEST;
 		String feuille = repertoireTest.getRoot()+"/xslMalForme.xsl";
 		String sortie = repertoireTest.getRoot()+"/test.pdf";
-		Throwable exception = null;		
 		
 		//WHEN
 		try {
 			PdfGeneration.convertToPDF(source, feuille, sortie);
 		}
 		catch (Exception e){
-			exception = e;
 		}
 		
 		//THEN
-		assertEquals(BadlyFormedXMLException.class, exception.getClass());
 		assertFalse( VerificationFichiers.fichierExiste(sortie) );
 		
 	}
 	
-	@Test 
-	public void convertToHtml_xslNonFonctionnelle() throws IOException{
+	@Test (expected = BadlyFormedXMLException.class)
+	public void testConvertToPdf_xslMalForme2() throws IOException, BadlyFormedXMLException, ParserConfigurationException, TransformerException, SAXException, BadlyFormedXSLException{
+		/* Vérifie que l'Exception BadlyFormedXMLException est bien levée */
+		
+		//GIVEN
+		File xslMalForme= repertoireTest.newFile("xslMalforme.xsl");
+		FileUtils.writeStringToFile(xslMalForme, ProjetConstantes.XSLBADFORM);
+		String source = ProjetConstantes.XMLTEST;
+		String feuille = repertoireTest.getRoot()+"/xslMalForme.xsl";
+		String sortie = repertoireTest.getRoot()+"/test.pdf";
+		
+		PdfGeneration.convertToPDF(source, feuille, sortie);
+		
+	}
+	
+	@Test
+	public void testConvertToPdf_xslNonFonctionnelle1() throws IOException{
+		/* Vérifie la non-création d'un fichier de sortie */
 		
 		//GIVEN
 		File xslNonFonc= repertoireTest.newFile("xslNonFonc.xsl");
-		FileUtils.writeStringToFile(xslNonFonc, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xsl:style xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" exclude-result-prefixes=\"xs\" version=\"2.0\"></xsl:style>\n");
-		String source = "bibliotheque.xml";
+		FileUtils.writeStringToFile(xslNonFonc, ProjetConstantes.XSLNONFONC);
+		String source = ProjetConstantes.XMLTEST;
 		String feuille = repertoireTest.getRoot()+"/xslNonFonc.xsl";
-		String sortie = repertoireTest.getRoot()+"/test.pdf";
-		Throwable exception = null;		
+		String sortie = repertoireTest.getRoot()+"/test.pdf";	
 		
 		//WHEN
 		try {
 			PdfGeneration.convertToPDF(source, feuille, sortie);
 		}
 		catch (Exception e){
-			exception = e;
 		}
 		
 		//THEN
-		assertEquals(BadlyFormedXSLException.class, exception.getClass());
 		assertFalse( VerificationFichiers.fichierExiste(sortie) );
+		
+	}
+	
+	@Test (expected = BadlyFormedXSLException.class) 
+	public void testConvertToPdf_xslNonFonctionnelle2() throws IOException, BadlyFormedXMLException, ParserConfigurationException, TransformerException, SAXException, BadlyFormedXSLException{
+		/* Vérifie que l'Exception BadlyFormedXSLException est bien levée */
+		
+		//GIVEN
+		File xslNonFonc= repertoireTest.newFile("xslNonFonc.xsl");
+		FileUtils.writeStringToFile(xslNonFonc, ProjetConstantes.XSLNONFONC);
+		String source = ProjetConstantes.XMLTEST;
+		String feuille = repertoireTest.getRoot()+"/xslNonFonc.xsl";
+		String sortie = repertoireTest.getRoot()+"/test.pdf";
+		
+		//WHEN
+		PdfGeneration.convertToPDF(source, feuille, sortie);
 		
 	}
 

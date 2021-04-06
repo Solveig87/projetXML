@@ -18,10 +18,11 @@ public class HtmlGeneration {
 	 * @param sourceXml - string - chemin du fichier source au format XML
 	 * @param feuilleXsl - string - chemin de la feuille de style au format XSL
 	 * @param sortieHtml - string - chemin du fichier de sortie HTML
+	 * @throws BadlyFormedXSLException 
 	 */
 	public static void convertToHtml(String sourceXml, String feuilleXsl, String sortieHtml)
 			throws TransformerConfigurationException, TransformerException,
-		         SAXException, IOException, BadlyFormedXMLException, ParserConfigurationException	   
+		         SAXException, IOException, BadlyFormedXMLException, ParserConfigurationException, BadlyFormedXSLException	   
 				{
 		
 			// Vérification que le fichier d'entrée existe

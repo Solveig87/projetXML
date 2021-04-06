@@ -33,7 +33,7 @@ public class PdfGeneration {
 	 * @param output - string - chemin du fichier de sortie PDF
 	 */
 
-    public static void convertToPDF(String input, String xslt, String output) throws IOException, BadlyFormedXMLException, ParserConfigurationException, TransformerException, SAXException {
+    public static void convertToPDF(String input, String xslt, String output) throws IOException, BadlyFormedXMLException, ParserConfigurationException, TransformerException, SAXException, BadlyFormedXSLException {
         File xsltFile = new File(xslt);
         
         // Vérification que le fichier d'entrée existe

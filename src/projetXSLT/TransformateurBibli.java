@@ -17,6 +17,10 @@ public class TransformateurBibli {
 	private String htmlStylesheet;
 	private String pdfStylesheet;
 	
+	/**
+	  * Constructeur de la classe TransfoBibli
+	  * feuilles de style définies par défaut, modifiables avec setHtmlStylesheet() et setPdfStylesheet()
+	  */
 	public TransformateurBibli() {
 		this.setHtmlStylesheet(ProjetConstantes.FEUILLEHTML);
 		this.setPdfStylesheet(ProjetConstantes.FEUILLEPDF);
@@ -25,11 +29,11 @@ public class TransformateurBibli {
 	/**
 	 * Méthode permettant de convertir un fichier XML vers HTML ou PDF via une transformation XSLT
 	 * @param input - string - chemin du fichier source au format XML
-	 * @param out - string - chemin du fichier de sortie sans son extension
 	 * @param format - string - format du fichier de sortie : pdf ou html
+	 * * @param out - string - chemin du fichier de sortie sans son extension
 	 */	
 	
-	public void convertXML(String input, String out, String format) throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException  {
+	public void convertXML(String input, String format, String out) throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException, BadlyFormedXSLException  {
 		String output = out + "." + format;
 		if (format.equals("pdf")) {
         	PdfGeneration.convertToPDF(input, pdfStylesheet, output);
@@ -38,8 +42,19 @@ public class TransformateurBibli {
         	HtmlGeneration.convertToHtml(input, htmlStylesheet, output);
 	    } 
 	    else {
-	    	throw new FormatException("Le format spécifié \"" + format + "\" n'est pas valide.");
+	    	throw new FormatException("ERREUR - Le format spécifié \"" + format + "\" n'est pas valide. Les formats valides sont \"html\" ou \"pdf\"");
 	    }
+	}
+	/**
+	 * Surcharge de la méthode convertXML()
+	 * Méthode permettant de convertir un fichier XML vers HTML ou PDF via une transformation XSLT sans préciser de fichier de sortie
+	 * Le fichier de sortie est automatiquement généré sur le modèle du nom du fichier d'entrée
+	 * @param input - string - chemin du fichier source au format XML
+	 * @param format - string - format du fichier de sortie : pdf ou html
+	 */	
+	public void convertXML(String input, String format) throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException, BadlyFormedXSLException  {
+		String sortie = input.substring(0, input.lastIndexOf('.'));
+		convertXML(input, format, sortie);
 	}
 
 	public String getHtmlStylesheet() {
@@ -58,22 +73,57 @@ public class TransformateurBibli {
 		this.pdfStylesheet = pdfStylesheet;
 	}	 
 
-    public static void main( String[] args ) throws SAXException, TransformerException, ParserConfigurationException
+    public static void main( String[] args ) throws SAXException, TransformerException, ParserConfigurationException, BadlyFormedXSLException
     {
     	TransformateurBibli transfo = new TransformateurBibli();
-    	Scanner myObj = new Scanner(System.in);
-	    System.out.println("Entrez le format de sortie souhaité.");	
-	    String format = myObj.nextLine();
-	    System.out.println("Entrez le nom du fichier de sortie souhaité.");	
-	    String output = myObj.nextLine();
-	    try {
-	    	transfo.convertXML("xmlmalforme.xml", output, format);
+    	String entree;
+   	 	String format;
+   	 	String sortie = "";
+    	switch (args.length) {
+    	case 0 : 
+    		Scanner myObj = new Scanner(System.in);
+        	System.out.println("Entrez le chemin du fichier d'entrée (avec l'extension).");	
+    	    entree = myObj.nextLine();
+    	    System.out.println("Entrez le format de sortie souhaité.");	
+    	    format = myObj.nextLine();
+    	    System.out.println("Entrez le nom du fichier de sortie souhaité (extension ajoutée automatiquement). ");
+    	    System.out.println("Si laissé vide le nom par défaut de la sortie sera le même que l'entrée. ");
+    	    sortie = myObj.nextLine();
+    	    myObj.close();
+    	    break;
+    	    
+    	case 2 : 
+    		entree = args[0];
+    		format = args[1];
+    		break;
+    		
+    	case 3 :
+    		entree = args[0];
+    		format = args[1];
+    		sortie = args[2];
+    		break;
+    		
+    	default :
+    		System.err.println("ERREUR - La bonne utilisation est :");
+    		System.err.println("java TransformateurBibli         (les arguments sont demandés à l'utilisateur pendant l'exécution)\n"
+    				+ "ou\n"
+    				+ "java TransformateurBibli fichier_entree format_sortie fichier_sortie        (les arguments sont en ligne de commande)");
+    		return;
+    	}
+    	
+    	try {
+    		if(sortie.isEmpty()) {
+    			transfo.convertXML(entree, format);
+    		}
+    		else {
+    			transfo.convertXML(entree, format, sortie);
+    		}
+	    	System.out.println("Conversion bien effectuée.");	
 	    }
 	    catch ( IOException | BadlyFormedXMLException | FormatException e) {
 	    	System.err.println(e.getMessage());
 	    }
-	    System.out.println("Conversion bien effectuée.");	
-        myObj.close();
+	    
     }
 
 }
