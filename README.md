@@ -27,6 +27,6 @@ Pour passe directement des arguments, il faut les ajouter dans *Run > Run Config
 #### Exécution en ligne de commande
 
 Pour exécuter en ligne de commande, il faut ouvrir un terminal, se placer dans la racine du répertoire du projet, puis exécuter la ligne suivante :
-```java -cp ./bin:./lib/* projetXSLT.TransformateurBibli```
+```java -cp bin:lib/* projetXSLT.TransformateurBibli```
 Les arguments peuvent être rajoutés directement à la suite de cette ligne, par exemple :
-```java -cp ./bin:./lib/* projetXSLT.TransformateurBibli bibliotheque.xml html sortieHtml```
+```java -cp bin:lib/* projetXSLT.TransformateurBibli bibliotheque.xml html sortieHtml```
