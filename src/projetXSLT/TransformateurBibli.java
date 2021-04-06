@@ -30,7 +30,7 @@ public class TransformateurBibli {
 	 * Méthode permettant de convertir un fichier XML vers HTML ou PDF via une transformation XSLT
 	 * @param input - string - chemin du fichier source au format XML
 	 * @param format - string - format du fichier de sortie : pdf ou html
-	 * * @param out - string - chemin du fichier de sortie sans son extension
+	 * @param out - string - chemin du fichier de sortie sans son extension
 	 */	
 	
 	public void convertXML(String input, String format, String out) throws SAXException, TransformerException, ParserConfigurationException, IOException, BadlyFormedXMLException, FormatException, BadlyFormedXSLException  {
@@ -111,9 +111,9 @@ public class TransformateurBibli {
     		
     	default :
     		System.err.println("ERREUR - La bonne utilisation est :");
-    		System.err.println("java -cp ./bin:./lib/* projetXSLT.TransformateurBibli         (les arguments sont demandés à l'utilisateur pendant l'exécution)\n"
+    		System.err.println("java -cp bin:lib/* projetXSLT.TransformateurBibli         (les arguments sont demandés à l'utilisateur pendant l'exécution)\n"
     				+ "ou\n"
-    				+ "java -cp ./bin:./lib/* projetXSLT.TransformateurBibli fichier_entree format_sortie fichier_sortie        (les arguments sont en ligne de commande)");
+    				+ "java -cp bin:lib/* projetXSLT.TransformateurBibli fichier_entree format_sortie fichier_sortie        (les arguments sont en ligne de commande)");
     		return;
     	}
     	
